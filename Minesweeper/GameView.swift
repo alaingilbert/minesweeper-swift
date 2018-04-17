@@ -234,7 +234,13 @@ class GameView : NSView {
     }
     
     override func mouseUp(with event: NSEvent) {
+        if (event.modifierFlags.contains(.command)) {
+            rightMouseUp(with: event)
+            return
+        }
+        
         super.mouseUp(with: event)
+        
         let tileX = Int(floor(event.locationInWindow.x / 40))
         let tileY = Int(floor((event.locationInWindow.y - 20) / 40))
         let tileIdx = idxFromCoordinate(x: tileX, y: tileY)
