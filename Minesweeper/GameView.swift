@@ -217,10 +217,9 @@ class GameView : NSView {
         let tileIdx = idxFromCoordinate(x: x, y: y)
         let tile = tiles[tileIdx]
         
-        if tile.state == .Discovered || tile.state == .Flagged {
+        if tile.state == .Discovered || tile.state == .Flagged || tile.state == .BadFlag || tile.state == .FlaggedMine {
             return
         }
-        
         if isMine(idx: tileIdx) {
             gameOver(idx: tileIdx)
             return
