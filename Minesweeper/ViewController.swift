@@ -15,6 +15,7 @@ class ViewController: NSViewController {
 
         // Do any additional setup after loading the view.
         gameView.flagsLbL = flagsLbl
+        gameView.timerLbl = timerLbl
     }
 
     override var representedObject: Any? {
@@ -23,6 +24,7 @@ class ViewController: NSViewController {
         }
     }
     
+    @IBOutlet weak var timerLbl: NSTextField!
     @IBOutlet weak var flagsLbl: NSTextField!
     @IBOutlet weak var gameView: GameView!
     

@@ -20,7 +20,10 @@ class GameView : NSView {
     }
     
     var flagsLbL: NSTextField = NSTextField()
+    var timerLbl: NSTextField = NSTextField()
     
+    var timer = Timer()
+    var seconds = 0
     var flags = 0
     let tileSize = 40
     let nbMines = 50
@@ -43,9 +46,11 @@ class GameView : NSView {
     }
     
     func reset() {
+        seconds = 0
         safe = 0
         flags = 0
         flagsLbL.stringValue = "Flags: 0/50"
+        timerLbl.stringValue = "Time: 0"
         let nbTiles = nbHorizontalTiles * nbVerticalTiles;
         for i in 0..<nbTiles {
             data[i] = false
@@ -233,6 +238,11 @@ class GameView : NSView {
         }
     }
     
+    @objc func updateTimer() {
+        seconds += 1
+        timerLbl.stringValue = String(format: "Time: %d", seconds)
+    }
+    
     override func mouseUp(with event: NSEvent) {
         if (event.modifierFlags.contains(.command)) {
             rightMouseUp(with: event)
@@ -247,6 +257,7 @@ class GameView : NSView {
         let tile = tiles[tileIdx]
         if state == State.Waiting {
             initBoard(x: tileX, y: tileY)
+            timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector: (#selector(self.updateTimer)), userInfo: nil, repeats: true)
         }
         
         if state == State.Playing {
@@ -266,6 +277,11 @@ class GameView : NSView {
             reset()
             state = .Waiting
         }
+        
+        if state == .GameOver || state == .Win {
+            timer.invalidate()
+        }
+        
         self.setNeedsDisplay(NSRect(x: 0, y: 0, width: 760, height: 520))
     }
     
