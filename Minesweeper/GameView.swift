@@ -70,14 +70,15 @@ class GameView : NSView {
         //let rect = NSRect(x: 0, y: 0, width: 100, height: 100)
         dirtyRect.fill()
         
-        let ctx = NSGraphicsContext.current?.cgContext
-        let nbTiles = nbHorizontalTiles * nbVerticalTiles
-        for i in 0...nbTiles-1 {
-            tiles[i].render(ctx: ctx)
-        }
-        
-        if state == .Win {
-            win(ctx: ctx)
+        if let ctx = NSGraphicsContext.current?.cgContext {
+            let nbTiles = nbHorizontalTiles * nbVerticalTiles
+            for i in 0...nbTiles-1 {
+                tiles[i].render(ctx: ctx)
+            }
+            
+            if state == .Win {
+                win(ctx: ctx)
+            }
         }
     }
     
@@ -100,7 +101,7 @@ class GameView : NSView {
     func around(idx: Int, x: Int, y: Int) -> Bool {
         let initialClickPosition = idxFromCoordinate(x: x, y: y)
         let neighborsIndexes = neighborIdx(idx: initialClickPosition)
-        return neighborsIndexes.index(of: idx) != nil ||
+        return neighborsIndexes.firstIndex(of: idx) != nil ||
                idx == initialClickPosition ||
                isMine(idx: idx)
     }
@@ -148,26 +149,26 @@ class GameView : NSView {
         showMines(deadIdx: idx);
     }
     
-    func win(ctx: CGContext?) {
+    func win(ctx: CGContext) {
         showMines(deadIdx: -1)
-        ctx?.saveGState()
-        ctx?.setFillColor(CGColor(red: 1, green: 1, blue: 1, alpha: 0.7))
-        ctx?.move(to: CGPoint(x: 0, y: 0))
-        ctx?.addLine(to: CGPoint(x: tileSize * 19, y: 0))
-        ctx?.addLine(to: CGPoint(x: tileSize * 19, y: tileSize * 13))
-        ctx?.addLine(to: CGPoint(x: 0, y: tileSize * 13))
-        ctx?.addLine(to: CGPoint(x: 0, y: 0))
-        ctx?.fillPath()
-        ctx?.restoreGState()
+        ctx.saveGState()
+        ctx.setFillColor(CGColor(red: 1, green: 1, blue: 1, alpha: 0.7))
+        ctx.move(to: CGPoint(x: 0, y: 0))
+        ctx.addLine(to: CGPoint(x: tileSize * 19, y: 0))
+        ctx.addLine(to: CGPoint(x: tileSize * 19, y: tileSize * 13))
+        ctx.addLine(to: CGPoint(x: 0, y: tileSize * 13))
+        ctx.addLine(to: CGPoint(x: 0, y: 0))
+        ctx.fillPath()
+        ctx.restoreGState()
         
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
         let label = "Win"
         let font = NSFont(name: "Arial", size: 40)!
         let attrs = [
-            NSAttributedStringKey.font: font,
-            NSAttributedStringKey.paragraphStyle: paragraphStyle,
-            NSAttributedStringKey.foregroundColor: NSColor(calibratedRed: 0, green: 0.502, blue: 0, alpha: 1),
+            NSAttributedString.Key.font: font,
+            NSAttributedString.Key.paragraphStyle: paragraphStyle,
+            NSAttributedString.Key.foregroundColor: NSColor(calibratedRed: 0, green: 0.502, blue: 0, alpha: 1),
             ]
         label.draw(with: CGRect(x: 0, y: ((tileSize*nbVerticalTiles) + 40) / 2, width: tileSize*nbHorizontalTiles, height: 40), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }

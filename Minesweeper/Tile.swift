@@ -31,97 +31,97 @@ class Tile {
         self.y = y
     }
     
-    func renderEmpty(ctx: CGContext?) {
+    func renderEmpty(ctx: CGContext) {
         let sizef = CGFloat(size)
-        ctx?.saveGState()
-        ctx?.translateBy(x: CGFloat(x * size), y: CGFloat(y * size))
-        ctx?.setLineWidth(1)
-        ctx?.setFillColor(CGColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1))
-        ctx?.setStrokeColor(CGColor(red: 0.502, green: 0.502, blue: 0.502, alpha: 1))
-        ctx?.move(to: CGPoint(x: 0, y: 0))
-        ctx?.addLine(to: CGPoint(x: sizef, y: 0))
-        ctx?.addLine(to: CGPoint(x: sizef, y: sizef))
-        ctx?.addLine(to: CGPoint(x: 0, y: sizef))
-        ctx?.addLine(to: CGPoint(x: 0, y: 0))
-        ctx?.drawPath(using: .fillStroke)
-        ctx?.restoreGState()
+        ctx.saveGState()
+        ctx.translateBy(x: CGFloat(x * size), y: CGFloat(y * size))
+        ctx.setLineWidth(1)
+        ctx.setFillColor(CGColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1))
+        ctx.setStrokeColor(CGColor(red: 0.502, green: 0.502, blue: 0.502, alpha: 1))
+        ctx.move(to: CGPoint(x: 0, y: 0))
+        ctx.addLine(to: CGPoint(x: sizef, y: 0))
+        ctx.addLine(to: CGPoint(x: sizef, y: sizef))
+        ctx.addLine(to: CGPoint(x: 0, y: sizef))
+        ctx.addLine(to: CGPoint(x: 0, y: 0))
+        ctx.drawPath(using: .fillStroke)
+        ctx.restoreGState()
     }
     
-    func renderFlag(ctx: CGContext?) {
+    func renderFlag(ctx: CGContext) {
         let sizef = CGFloat(size)
-        ctx?.saveGState()
+        ctx.saveGState()
         
-        ctx?.translateBy(x: CGFloat(x * size), y: CGFloat(y * size))
+        ctx.translateBy(x: CGFloat(x * size), y: CGFloat(y * size))
         
         // Red flag
-        ctx?.setFillColor(CGColor(red: 1, green: 0, blue: 0, alpha: 1))
-        ctx?.move(to: CGPoint(x: sizef/3.0, y: sizef/2.0))
-        ctx?.addLine(to: CGPoint(x: sizef/3.0*2, y: sizef/3.0))
-        ctx?.addLine(to: CGPoint(x: sizef/3.0*2, y: sizef/3.0*2))
-        ctx?.fillPath()
+        ctx.setFillColor(CGColor(red: 1, green: 0, blue: 0, alpha: 1))
+        ctx.move(to: CGPoint(x: sizef/3.0, y: sizef/2.0))
+        ctx.addLine(to: CGPoint(x: sizef/3.0*2, y: sizef/3.0))
+        ctx.addLine(to: CGPoint(x: sizef/3.0*2, y: sizef/3.0*2))
+        ctx.fillPath()
         
         // Black pole
-        ctx?.setLineWidth(2)
-        ctx?.setStrokeColor(CGColor(red: 0, green: 0, blue: 0, alpha: 1))
-        ctx?.move(to: CGPoint(x: sizef/3.0*2, y: sizef-sizef/3.0))
-        ctx?.addLine(to: CGPoint(x: sizef/3.0*2, y: sizef/4.0))
-        ctx?.addLine(to: CGPoint(x: sizef/2.0, y: sizef/4.0))
-        ctx?.addLine(to: CGPoint(x: sizef-sizef/5.0, y: sizef/4.0))
-        ctx?.strokePath()
+        ctx.setLineWidth(2)
+        ctx.setStrokeColor(CGColor(red: 0, green: 0, blue: 0, alpha: 1))
+        ctx.move(to: CGPoint(x: sizef/3.0*2, y: sizef-sizef/3.0))
+        ctx.addLine(to: CGPoint(x: sizef/3.0*2, y: sizef/4.0))
+        ctx.addLine(to: CGPoint(x: sizef/2.0, y: sizef/4.0))
+        ctx.addLine(to: CGPoint(x: sizef-sizef/5.0, y: sizef/4.0))
+        ctx.strokePath()
         
-        ctx?.restoreGState()
+        ctx.restoreGState()
     }
     
-    func renderExplodedMine(ctx: CGContext?) {
+    func renderExplodedMine(ctx: CGContext) {
         let sizef = CGFloat(size)
-        ctx?.saveGState()
-        ctx?.translateBy(x: CGFloat(x * size), y: CGFloat(y * size))
-        ctx?.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1))
-        ctx?.setFillColor(CGColor(red: 0.8, green: 0, blue: 0, alpha: 1))
-        ctx?.addArc(center: CGPoint(x: sizef/2, y: sizef/2), radius: sizef/4, startAngle: 0, endAngle: CGFloat(2 * Double.pi), clockwise: true)
-        ctx?.drawPath(using: .fillStroke)
-        ctx?.restoreGState()
+        ctx.saveGState()
+        ctx.translateBy(x: CGFloat(x * size), y: CGFloat(y * size))
+        ctx.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1))
+        ctx.setFillColor(CGColor(red: 0.8, green: 0, blue: 0, alpha: 1))
+        ctx.addArc(center: CGPoint(x: sizef/2, y: sizef/2), radius: sizef/4, startAngle: 0, endAngle: CGFloat(2 * Double.pi), clockwise: true)
+        ctx.drawPath(using: .fillStroke)
+        ctx.restoreGState()
     }
     
-    func renderMine(ctx: CGContext?) {
+    func renderMine(ctx: CGContext) {
         let sizef = CGFloat(size)
-        ctx?.saveGState()
-        ctx?.translateBy(x: CGFloat(x * size), y: CGFloat(y * size))
-        ctx?.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1))
-        ctx?.setFillColor(CGColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1))
-        ctx?.addArc(center: CGPoint(x: sizef/2, y: sizef/2), radius: sizef/4, startAngle: 0, endAngle: CGFloat(2 * Double.pi), clockwise: true)
-        ctx?.drawPath(using: .fillStroke)
-        ctx?.restoreGState()
+        ctx.saveGState()
+        ctx.translateBy(x: CGFloat(x * size), y: CGFloat(y * size))
+        ctx.setStrokeColor(CGColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1))
+        ctx.setFillColor(CGColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1))
+        ctx.addArc(center: CGPoint(x: sizef/2, y: sizef/2), radius: sizef/4, startAngle: 0, endAngle: CGFloat(2 * Double.pi), clockwise: true)
+        ctx.drawPath(using: .fillStroke)
+        ctx.restoreGState()
     }
     
-    func renderCross(ctx: CGContext?) {
+    func renderCross(ctx: CGContext) {
         let sizef = CGFloat(size)
-        ctx?.saveGState()
-        ctx?.translateBy(x: CGFloat(x * size), y: CGFloat(y * size))
-        ctx?.setStrokeColor(CGColor(red: 0, green: 0, blue: 0, alpha: 1))
-        ctx?.setLineWidth(2)
-        ctx?.move(to: CGPoint(x: sizef/5, y: sizef/5))
-        ctx?.addLine(to: CGPoint(x: sizef-sizef/5, y: sizef-sizef/5))
-        ctx?.move(to: CGPoint(x: sizef/5, y: sizef-sizef/5))
-        ctx?.addLine(to: CGPoint(x: sizef-sizef/5, y: sizef/5))
-        ctx?.strokePath()
-        ctx?.restoreGState()
+        ctx.saveGState()
+        ctx.translateBy(x: CGFloat(x * size), y: CGFloat(y * size))
+        ctx.setStrokeColor(CGColor(red: 0, green: 0, blue: 0, alpha: 1))
+        ctx.setLineWidth(2)
+        ctx.move(to: CGPoint(x: sizef/5, y: sizef/5))
+        ctx.addLine(to: CGPoint(x: sizef-sizef/5, y: sizef-sizef/5))
+        ctx.move(to: CGPoint(x: sizef/5, y: sizef-sizef/5))
+        ctx.addLine(to: CGPoint(x: sizef-sizef/5, y: sizef/5))
+        ctx.strokePath()
+        ctx.restoreGState()
     }
     
-    func renderDiscovered(ctx: CGContext?) {
+    func renderDiscovered(ctx: CGContext) {
         let sizef = CGFloat(size)
-        ctx?.saveGState()
-        ctx?.translateBy(x: CGFloat(x * size), y: CGFloat(y * size))
-        ctx?.setLineWidth(1)
-        ctx?.setFillColor(CGColor(red: 1, green: 1, blue: 1, alpha: 1))
-        ctx?.setStrokeColor(CGColor(red: 0.502, green: 0.502, blue: 0.502, alpha: 1))
-        ctx?.move(to: CGPoint(x: 0, y: 0))
-        ctx?.addLine(to: CGPoint(x: sizef, y: 0))
-        ctx?.addLine(to: CGPoint(x: sizef, y: sizef))
-        ctx?.addLine(to: CGPoint(x: 0, y: sizef))
-        ctx?.addLine(to: CGPoint(x: 0, y: 0))
-        ctx?.drawPath(using: .fillStroke)
-        ctx?.restoreGState()
+        ctx.saveGState()
+        ctx.translateBy(x: CGFloat(x * size), y: CGFloat(y * size))
+        ctx.setLineWidth(1)
+        ctx.setFillColor(CGColor(red: 1, green: 1, blue: 1, alpha: 1))
+        ctx.setStrokeColor(CGColor(red: 0.502, green: 0.502, blue: 0.502, alpha: 1))
+        ctx.move(to: CGPoint(x: 0, y: 0))
+        ctx.addLine(to: CGPoint(x: sizef, y: 0))
+        ctx.addLine(to: CGPoint(x: sizef, y: sizef))
+        ctx.addLine(to: CGPoint(x: 0, y: sizef))
+        ctx.addLine(to: CGPoint(x: 0, y: 0))
+        ctx.drawPath(using: .fillStroke)
+        ctx.restoreGState()
         
         if minesAround == 0 {
             return
@@ -143,14 +143,14 @@ class Tile {
         let label = String(minesAround)
         let font = NSFont(name: "Arial", size: 38)!
         let attrs = [
-            NSAttributedStringKey.font: font,
-            NSAttributedStringKey.paragraphStyle: paragraphStyle,
-            NSAttributedStringKey.foregroundColor: colors[minesAround-1],
+            NSAttributedString.Key.font: font,
+            NSAttributedString.Key.paragraphStyle: paragraphStyle,
+            NSAttributedString.Key.foregroundColor: colors[minesAround-1],
         ]
         label.draw(with: CGRect(x: x*size, y: y*size, width: size, height: size), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
     
-    func render(ctx: CGContext?) {
+    func render(ctx: CGContext) {
         switch state {
         case .Empty:
             renderEmpty(ctx: ctx)
