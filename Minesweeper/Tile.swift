@@ -64,6 +64,35 @@ class Tile {
         renderTileBackground(ctx, TileColor.empty)
     }
     
+    
+    func renderDiscovered(_ ctx: CGContext) {
+        renderTileBackground(ctx, TileColor.discovered)
+        
+        if minesAround == 0 {
+            return
+        }
+        
+        let colors = [
+            NSColor(calibratedRed: 0,     green: 0,     blue: 1,     alpha: 1), // Blue
+            NSColor(calibratedRed: 0,     green: 0.502, blue: 0,     alpha: 1), // Green
+            NSColor(calibratedRed: 1,     green: 0,     blue: 0,     alpha: 1), // Red
+            NSColor(calibratedRed: 0,     green: 0,     blue: 0.502, alpha: 1), // Navy
+            NSColor(calibratedRed: 0.502, green: 0,     blue: 0,     alpha: 1), // Maroon
+            NSColor(calibratedRed: 0,     green: 1,     blue: 1,     alpha: 1), // Aqua
+            NSColor(calibratedRed: 0.502, green: 0,     blue: 0.502, alpha: 1), // Purple
+            NSColor(calibratedRed: 0,     green: 0,     blue: 0,     alpha: 1), // Black
+        ]
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        let attrs: [NSAttributedString.Key: Any] = [
+            .font: NSFont(name: "Arial", size: 38)!,
+            .paragraphStyle: paragraphStyle,
+            .foregroundColor: colors[minesAround-1],
+        ]
+        String(minesAround).draw(with: CGRect(x: x*size, y: y*size, width: size, height: size), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+    }
+    
     func renderFlag(_ ctx: CGContext) {
         tileDrawWrapper(ctx, {
             let sizef = CGFloat(size)
@@ -107,34 +136,6 @@ class Tile {
             ctx.addLine(to: CGPoint(x: sizef-sizef/5, y: sizef/5))
             ctx.strokePath()
         })
-    }
-    
-    func renderDiscovered(_ ctx: CGContext) {
-        renderTileBackground(ctx, TileColor.discovered)
-        
-        if minesAround == 0 {
-            return
-        }
-        
-        let colors = [
-            NSColor(calibratedRed: 0,     green: 0,     blue: 1,     alpha: 1), // Blue
-            NSColor(calibratedRed: 0,     green: 0.502, blue: 0,     alpha: 1), // Green
-            NSColor(calibratedRed: 1,     green: 0,     blue: 0,     alpha: 1), // Red
-            NSColor(calibratedRed: 0,     green: 0,     blue: 0.502, alpha: 1), // Navy
-            NSColor(calibratedRed: 0.502, green: 0,     blue: 0,     alpha: 1), // Maroon
-            NSColor(calibratedRed: 0,     green: 1,     blue: 1,     alpha: 1), // Aqua
-            NSColor(calibratedRed: 0.502, green: 0,     blue: 0.502, alpha: 1), // Purple
-            NSColor(calibratedRed: 0,     green: 0,     blue: 0,     alpha: 1), // Black
-        ]
-        
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .center
-        let attrs: [NSAttributedString.Key: Any] = [
-            .font: NSFont(name: "Arial", size: 38)!,
-            .paragraphStyle: paragraphStyle,
-            .foregroundColor: colors[minesAround-1],
-        ]
-        String(minesAround).draw(with: CGRect(x: x*size, y: y*size, width: size, height: size), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
     
     func render(ctx: CGContext) {
