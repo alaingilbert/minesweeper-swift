@@ -15,32 +15,97 @@ class Tile {
     }
     
     private enum TileColor {
-        static let empty        = CGColor(red: 0.8,   green: 0.8,   blue: 0.8,   alpha: 1)
-        static let flagged      = CGColor(red: 1,     green: 0,     blue: 0,     alpha: 1)
-        static let mineStroke   = CGColor(red: 0.2,   green: 0.2,   blue: 0.2,   alpha: 1)
-        static let mineNormal   = CGColor(red: 0.4,   green: 0.4,   blue: 0.4,   alpha: 1)
-        static let mineExploded = CGColor(red: 0.8,   green: 0,     blue: 0,     alpha: 1)
-        static let discovered   = CGColor(red: 1,     green: 1,     blue: 1,     alpha: 1)
-        static let stroke       = CGColor(red: 0.502, green: 0.502, blue: 0.502, alpha: 1)
+        static let empty         = CGColor(red: 0.8,   green: 0.8,   blue: 0.8,   alpha: 1)
+        static let flagged       = CGColor(red: 1,     green: 0,     blue: 0,     alpha: 1)
+        static let mineStroke    = CGColor(red: 0.2,   green: 0.2,   blue: 0.2,   alpha: 1)
+        static let mineNormal    = CGColor(red: 0.4,   green: 0.4,   blue: 0.4,   alpha: 1)
+        static let mineExploded  = CGColor(red: 0.8,   green: 0,     blue: 0,     alpha: 1)
+        static let mineStrokeDbg = CGColor(red: 0.2,   green: 0.2,   blue: 0.2,   alpha: 0.2)
+        static let mineDebug     = CGColor(red: 0.4,   green: 0.4,   blue: 0.4,   alpha: 0.2)
+        static let discovered    = CGColor(red: 1,     green: 1,     blue: 1,     alpha: 1)
+        static let stroke        = CGColor(red: 0.502, green: 0.502, blue: 0.502, alpha: 1)
     }
     
     let size: Int
+    private let _idx: Int
     var x: Int
     var y: Int
     var state = State.Empty
     var isMine = false
     var minesAround = 0
+    private var prob = -1.0
+    var debugMines = false
+    var dbgIdx = false
     
-    init(x: Int, y: Int, size: Int) {
+    init(idx: Int, x: Int, y: Int, size: Int) {
+        self._idx = idx
         self.x = x
         self.y = y
         self.size = size
     }
     
+    func reset() {
+        state = .Empty
+        isMine = false
+        resetProb()
+        minesAround = 0
+    }
+    
+    func coord() -> (Int, Int) { (x, y) }
+    
     func discover(_ nbMinesAround: Int) {
         minesAround = nbMinesAround
         state = .Discovered
+        prob = 0
     }
+    
+    func IsDiscovered() -> Bool {
+        state == .Discovered
+    }
+    func IsUndiscovered() -> Bool {
+        state != .Discovered
+    }
+    func idx() -> Int { _idx }
+    func SetProbMine() {
+        if prob == 1 || prob == 0 {
+            return
+        }
+        if !isMine {
+            print("Set prob mine which is not a mine", idx())
+        }
+        prob = 1
+    }
+    func SetProbNoMine() {
+        if prob == 1 || prob == 0 {
+            return
+        }
+        if isMine {
+            print("Set prob no mine which is a mine", idx())
+        }
+        prob = 0
+    }
+    func GetProb() -> Double {
+        prob
+    }
+    func resetProb() {
+        prob = -1
+    }
+    func SetProb(_ value: Double) {
+        if prob == 1 || prob == 0 {
+            return
+        }
+        if value == 1 {
+            SetProbMine()
+        } else if value == 0 {
+            SetProbNoMine()
+        } else {
+            prob = value
+        }
+    }
+    func IsProbMine() -> Bool { prob == 1 } // a Mine according to calculated probability
+    func IsProbNoMine() -> Bool { prob == 0 } // not a Mine according to calculated probability
+    func IsKnown() -> Bool { IsProbMine() || IsProbNoMine() }  // we know the tile value
+    func IsUnknown() -> Bool { !IsKnown() } // we don't know the tile value
     
     private func tileDrawWrapper(_ ctx: CGContext, _ clb: () -> Void) {
         ctx.saveGState()
@@ -85,6 +150,41 @@ class Tile {
         String(minesAround).draw(with: CGRect(x: x*size, y: y*size, width: size, height: size), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
     
+    private func renderProb(_ ctx: CGContext) {
+        if dbgIdx {
+            renderIdx(ctx)
+        }
+        if state == .Discovered || prob == -1 {
+            return
+        }
+        let paragraphStyle = NSMutableParagraphStyle()
+        var bgColor = NSColor.clear
+        if prob == 1 {
+            bgColor = NSColor.green
+        } else if prob == 0 {
+            bgColor = NSColor.red
+        }
+        paragraphStyle.alignment = .center
+        let attrs: [NSAttributedString.Key: Any] = [
+            .font: NSFont(name: "Arial", size: 12)!,
+            .backgroundColor: bgColor,
+            .paragraphStyle: paragraphStyle,
+            .foregroundColor: NSColor.black,
+        ]
+        String(format: "%.2f", prob).draw(with: CGRect(x: x*size, y: y*size, width: size, height: size), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+    }
+    
+    private func renderIdx(_ ctx: CGContext) {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .left
+        let attrs: [NSAttributedString.Key: Any] = [
+            .font: NSFont(name: "Arial", size: 7)!,
+            .paragraphStyle: paragraphStyle,
+            .foregroundColor: NSColor.gray,
+        ]
+        String(y*19+x).draw(with: CGRect(x: x*size+1, y: y*size-32, width: size, height: size), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+    }
+    
     private func renderFlag(_ ctx: CGContext) {
         tileDrawWrapper(ctx, {
             let sizef = CGFloat(size)
@@ -117,6 +217,16 @@ class Tile {
         })
     }
     
+    private func renderDebugMine(_ ctx: CGContext) {
+        tileDrawWrapper(ctx, {
+            let sizef = CGFloat(size)
+            ctx.setStrokeColor(TileColor.mineStrokeDbg)
+            ctx.setFillColor(TileColor.mineDebug)
+            ctx.addArc(center: CGPoint(x: sizef/2, y: sizef/2), radius: sizef/4, startAngle: 0, endAngle: CGFloat(2 * Double.pi), clockwise: true)
+            ctx.drawPath(using: .fillStroke)
+        })
+    }
+    
     private func renderCross(_ ctx: CGContext) {
         tileDrawWrapper(ctx, {
             let sizef = CGFloat(size)
@@ -132,6 +242,9 @@ class Tile {
     
     private func renderEmpty(_ ctx: CGContext) {
         renderTileBackground(ctx, TileColor.empty)
+        if debugMines && isMine {
+            renderDebugMine(ctx)
+        }
     }
     
     private func renderDiscovered(_ ctx: CGContext) {
@@ -166,7 +279,9 @@ class Tile {
         renderFlag(ctx)
     }
     
-    func render(ctx: CGContext) {
+    func render(ctx: CGContext, debugMines: Bool, dbgIdx: Bool, dbgProb: Bool) {
+        self.debugMines = debugMines
+        self.dbgIdx = dbgIdx
         switch state {
         case .Empty:        renderEmpty(ctx)
         case .Discovered:   renderDiscovered(ctx)
@@ -175,6 +290,9 @@ class Tile {
         case .Mine:         renderMine(ctx)
         case .ExplodedMine: renderExplodedMine(ctx)
         case .FlaggedMine:  renderFlaggedMine(ctx)
+        }
+        if dbgProb {
+            renderProb(ctx)
         }
     }
 }
