@@ -14,7 +14,7 @@ class Tile {
         case Empty, Discovered, Flagged, BadFlag, ExplodedMine, Mine, FlaggedMine
     }
     
-    enum TileColor {
+    private enum TileColor {
         static let empty        = CGColor(red: 0.8,   green: 0.8,   blue: 0.8,   alpha: 1)
         static let flagged      = CGColor(red: 1,     green: 0,     blue: 0,     alpha: 1)
         static let mineStroke   = CGColor(red: 0.2,   green: 0.2,   blue: 0.2,   alpha: 1)
@@ -42,14 +42,14 @@ class Tile {
         state = .Discovered
     }
     
-    func tileDrawWrapper(_ ctx: CGContext, _ clb: () -> Void) {
+    private func tileDrawWrapper(_ ctx: CGContext, _ clb: () -> Void) {
         ctx.saveGState()
         ctx.translateBy(x: CGFloat(x * size), y: CGFloat(y * size))
         clb()
         ctx.restoreGState()
     }
     
-    func renderTileBackground(_ ctx: CGContext, _ color: CGColor) {
+    private func renderTileBackground(_ ctx: CGContext, _ color: CGColor) {
         tileDrawWrapper(ctx, {
             let sizef = CGFloat(size)
             ctx.setLineWidth(1)
@@ -60,7 +60,7 @@ class Tile {
         })
     }
     
-    func renderTileNumber(_ ctx: CGContext) {
+    private func renderTileNumber(_ ctx: CGContext) {
         if minesAround == 0 {
             return
         }
@@ -85,7 +85,7 @@ class Tile {
         String(minesAround).draw(with: CGRect(x: x*size, y: y*size, width: size, height: size), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
     
-    func renderFlag(_ ctx: CGContext) {
+    private func renderFlag(_ ctx: CGContext) {
         tileDrawWrapper(ctx, {
             let sizef = CGFloat(size)
             // Red flag
@@ -105,7 +105,7 @@ class Tile {
         })
     }
     
-    func renderMine(_ ctx: CGContext, exploded: Bool) {
+    private func renderMine(_ ctx: CGContext, exploded: Bool) {
         tileDrawWrapper(ctx, {
             let normalColor = TileColor.mineNormal
             let explodedColor = TileColor.mineExploded
@@ -117,7 +117,7 @@ class Tile {
         })
     }
     
-    func renderCross(_ ctx: CGContext) {
+    private func renderCross(_ ctx: CGContext) {
         tileDrawWrapper(ctx, {
             let sizef = CGFloat(size)
             ctx.setStrokeColor(CGColor.black)
@@ -130,37 +130,37 @@ class Tile {
         })
     }
     
-    func renderEmpty(_ ctx: CGContext) {
+    private func renderEmpty(_ ctx: CGContext) {
         renderTileBackground(ctx, TileColor.empty)
     }
     
-    func renderDiscovered(_ ctx: CGContext) {
+    private func renderDiscovered(_ ctx: CGContext) {
         renderTileBackground(ctx, TileColor.discovered)
         renderTileNumber(ctx)
     }
     
-    func renderFlagged(_ ctx: CGContext) {
+    private func renderFlagged(_ ctx: CGContext) {
         renderEmpty(ctx)
         renderFlag(ctx)
     }
     
-    func renderBadFlag(_ ctx: CGContext) {
+    private func renderBadFlag(_ ctx: CGContext) {
         renderEmpty(ctx)
         renderFlag(ctx)
         renderCross(ctx)
     }
     
-    func renderMine(_ ctx: CGContext) {
+    private func renderMine(_ ctx: CGContext) {
         renderEmpty(ctx)
         renderMine(ctx, exploded: false)
     }
     
-    func renderExplodedMine(_ ctx: CGContext) {
+    private func renderExplodedMine(_ ctx: CGContext) {
         renderEmpty(ctx)
         renderMine(ctx, exploded: true)
     }
     
-    func renderFlaggedMine(_ ctx: CGContext) {
+    private func renderFlaggedMine(_ ctx: CGContext) {
         renderEmpty(ctx)
         renderMine(ctx, exploded: false)
         renderFlag(ctx)
