@@ -169,11 +169,6 @@ class GameView : NSView {
         let tile = tiles[tileIdx]
         
         guard tile.state == .Empty else { return 0 }
-
-        if isMine(tileIdx) {
-            gameOver(idx: tileIdx)
-            return 0
-        }
         
         let nbMinesAround = countMinesAround(x: x, y: y)
         tile.discover(nbMinesAround)
@@ -198,6 +193,19 @@ class GameView : NSView {
             flags -= 1
         }
         flagsLbL.stringValue = String(format: "Flags: %d/50", flags)
+    }
+    
+    func checkGameOver(_ tilesToShow: [(Int, Int)]) -> Bool {
+        for (x, y) in tilesToShow {
+            let tileIdx = idxFromCoordinate(x, y)
+            let tile = tiles[tileIdx]
+            guard tile.state == .Empty else { continue }
+            if isMine(tileIdx) {
+                gameOver(idx: tileIdx)
+                return true
+            }
+        }
+        return false
     }
     
     @objc func updateTimer() {
@@ -244,11 +252,13 @@ class GameView : NSView {
             if tile.state == .Discovered && countFlagsAround(x: tileX, y: tileY) == countMinesAround(x: tileX, y: tileY) {
                 tilesToShow.append(contentsOf: neighborCoord(x: tileX, y: tileY))
             }
-            for (x, y) in tilesToShow {
-                safe += showTile(x: x, y: y)
-            }
-            if safe == tiles.count - nbMines {
-                state = .Win
+            if !checkGameOver(tilesToShow) {
+                for (x, y) in tilesToShow {
+                    safe += showTile(x: x, y: y)
+                }
+                if safe == tiles.count - nbMines {
+                    state = .Win
+                }
             }
         } else if state == .GameOver || state == .Win {
             reset()
