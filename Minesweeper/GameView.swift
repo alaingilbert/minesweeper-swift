@@ -284,6 +284,9 @@ class GameView : NSView {
         redraw()
     }
     
+    // Return true if the event is within the application bounds
+    // It is possible to mousedown in the window and mouseup outside of it and still receive the event.
+    // This will prevent processing events like mouseup that are out of bounds
     func checkBounds(_ event: NSEvent) -> Bool {
         var point = event.locationInWindow
         point.y -= 20
