@@ -67,11 +67,13 @@ class Tile {
     
     func renderDiscovered(_ ctx: CGContext) {
         renderTileBackground(ctx, TileColor.discovered)
-        
+        renderTileNumber(ctx)
+    }
+    
+    func renderTileNumber(_ ctx: CGContext) {
         if minesAround == 0 {
             return
         }
-        
         let colors = [
             NSColor(calibratedRed: 0,     green: 0,     blue: 1,     alpha: 1), // Blue
             NSColor(calibratedRed: 0,     green: 0.502, blue: 0,     alpha: 1), // Green
