@@ -49,15 +49,19 @@ class Tile {
         ctx.restoreGState()
     }
     
-    func renderEmpty(_ ctx: CGContext) {
+    func renderTileBackground(_ ctx: CGContext, _ color: CGColor) {
         tileDrawWrapper(ctx, {
             let sizef = CGFloat(size)
             ctx.setLineWidth(1)
-            ctx.setFillColor(TileColor.empty)
+            ctx.setFillColor(color)
             ctx.setStrokeColor(TileColor.stroke)
             ctx.addRect(CGRect(x: 0, y: 0, width: sizef, height: sizef))
             ctx.drawPath(using: .fillStroke)
         })
+    }
+    
+    func renderEmpty(_ ctx: CGContext) {
+        renderTileBackground(ctx, TileColor.empty)
     }
     
     func renderFlag(_ ctx: CGContext) {
@@ -106,14 +110,7 @@ class Tile {
     }
     
     func renderDiscovered(_ ctx: CGContext) {
-        tileDrawWrapper(ctx, {
-            let sizef = CGFloat(size)
-            ctx.setLineWidth(1)
-            ctx.setFillColor(TileColor.discovered)
-            ctx.setStrokeColor(TileColor.stroke)
-            ctx.addRect(CGRect(x: 0, y: 0, width: sizef, height: sizef))
-            ctx.drawPath(using: .fillStroke)
-        })
+        renderTileBackground(ctx, TileColor.discovered)
         
         if minesAround == 0 {
             return
