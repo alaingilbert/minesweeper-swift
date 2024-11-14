@@ -60,16 +60,6 @@ class Tile {
         })
     }
     
-    func renderEmpty(_ ctx: CGContext) {
-        renderTileBackground(ctx, TileColor.empty)
-    }
-    
-    
-    func renderDiscovered(_ ctx: CGContext) {
-        renderTileBackground(ctx, TileColor.discovered)
-        renderTileNumber(ctx)
-    }
-    
     func renderTileNumber(_ ctx: CGContext) {
         if minesAround == 0 {
             return
@@ -140,29 +130,51 @@ class Tile {
         })
     }
     
+    func renderEmpty(_ ctx: CGContext) {
+        renderTileBackground(ctx, TileColor.empty)
+    }
+    
+    func renderDiscovered(_ ctx: CGContext) {
+        renderTileBackground(ctx, TileColor.discovered)
+        renderTileNumber(ctx)
+    }
+    
+    func renderFlagged(_ ctx: CGContext) {
+        renderEmpty(ctx)
+        renderFlag(ctx)
+    }
+    
+    func renderBadFlag(_ ctx: CGContext) {
+        renderEmpty(ctx)
+        renderFlag(ctx)
+        renderCross(ctx)
+    }
+    
+    func renderMine(_ ctx: CGContext) {
+        renderEmpty(ctx)
+        renderMine(ctx, exploded: false)
+    }
+    
+    func renderExplodedMine(_ ctx: CGContext) {
+        renderEmpty(ctx)
+        renderMine(ctx, exploded: true)
+    }
+    
+    func renderFlaggedMine(_ ctx: CGContext) {
+        renderEmpty(ctx)
+        renderMine(ctx, exploded: false)
+        renderFlag(ctx)
+    }
+    
     func render(ctx: CGContext) {
         switch state {
-        case .Empty:
-            renderEmpty(ctx)
-        case .Flagged:
-            renderEmpty(ctx)
-            renderFlag(ctx)
-        case .Discovered:
-            renderDiscovered(ctx)
-        case .ExplodedMine:
-            renderEmpty(ctx)
-            renderMine(ctx, exploded: true)
-        case .BadFlag:
-            renderEmpty(ctx)
-            renderFlag(ctx)
-            renderCross(ctx)
-        case .Mine:
-            renderEmpty(ctx)
-            renderMine(ctx, exploded: false)
-        case .FlaggedMine:
-            renderEmpty(ctx)
-            renderMine(ctx, exploded: false)
-            renderFlag(ctx)
+        case .Empty:        renderEmpty(ctx)
+        case .Discovered:   renderDiscovered(ctx)
+        case .Flagged:      renderFlagged(ctx)
+        case .BadFlag:      renderBadFlag(ctx)
+        case .Mine:         renderMine(ctx)
+        case .ExplodedMine: renderExplodedMine(ctx)
+        case .FlaggedMine:  renderFlaggedMine(ctx)
         }
     }
 }
