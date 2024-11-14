@@ -130,7 +130,7 @@ class GameView : NSView {
             .paragraphStyle: paragraphStyle,
             .foregroundColor: NSColor(calibratedRed: 0, green: 0.502, blue: 0, alpha: 1),
         ]
-        "Win".draw(with: CGRect(x: 0, y: ((verticalSize()) + 40) / 2, width: horizontalSize(), height: 40), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+        "Win".draw(with: CGRect(x: 0, y: ((verticalSize()) + tileSize) / 2, width: horizontalSize(), height: tileSize), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
     
     func isValidPosition(x: Int, y: Int) -> Bool {
