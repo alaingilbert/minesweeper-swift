@@ -220,7 +220,7 @@ class GameView : NSView {
     }
     
     override func mouseUp(with event: NSEvent) {
-        if !bounds.contains(event.locationInWindow) {
+        if !checkBounds(event) {
             return
         }
         if event.modifierFlags.contains(.command) {
@@ -263,7 +263,7 @@ class GameView : NSView {
     }
     
     override func rightMouseUp(with event: NSEvent) {
-        if !bounds.contains(event.locationInWindow) {
+        if !checkBounds(event) {
             return
         }
         super.rightMouseUp(with: event)
@@ -272,6 +272,12 @@ class GameView : NSView {
             toggleFlag(x: tileX, y: tileY)
         }
         redraw()
+    }
+    
+    func checkBounds(_ event: NSEvent) -> Bool {
+        var point = event.locationInWindow
+        point.y -= 20
+        return bounds.contains(point)
     }
     
     func redraw() {
