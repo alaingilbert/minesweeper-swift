@@ -14,3 +14,4 @@ seed: 14211997978753061214 idx: 118
 seed: 8141206863891449873 idx: 142
 seed: 11297196562778340216 idx: 104 (slow with reset to false)
 seed: 18361524715519361249 idx: 142 (fails if we dont reset to false)
+seed: 13476537246291903651 idx: 122 (split mine broken)
