@@ -257,6 +257,16 @@ class WinSweeperTests: XCTestCase {
         XCTAssertTrue(gb.tiles[210].isMine)
     }
     
+    func testProb17() throws {
+        let gb = GameBoard(width: 19, height: 13)
+        gb.initBoard(seed: 13476537246291903651, 122)
+        gb.state = .Playing
+        gb.showTiles([122])
+        (0..<15).forEach { _ in gb.showSafeTiles() }
+        XCTAssertEqual(gb.tiles[79].getProb(), 1.0)
+        XCTAssertEqual(gb.tiles[78].getProb(), 0.0)
+    }
+    
     func testExample1() throws {
         let result = 1 + 2
         XCTAssertEqual(result, 3)
