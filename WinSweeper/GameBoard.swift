@@ -15,6 +15,7 @@ class GameBoard: TileContext {
     var tiles: [Tile] = []
     var halfPairs: Set<Pair<Tile>> = []
     var seed: UInt64 = 0
+    var initIdx = 0
     private let width: Int
     private let height: Int
     private var undoStack: [([Tile], Set<Pair<Tile>>, GKMersenneTwisterRandomSource)] = []
@@ -29,6 +30,7 @@ class GameBoard: TileContext {
     
     func initBoard(seed newSeed: UInt64, _ idx: Int) {
         seed = newSeed
+        initIdx = idx
         print("seed: \(seed) idx: \(idx)")
         generator = GKMersenneTwisterRandomSource(seed: seed)
         for _ in 0..<nbMines {
@@ -104,7 +106,7 @@ class GameBoard: TileContext {
             }
         }
         if !rebalance(tile) {
-            fatalError("failed to rebalance")
+            fatalError(String(format: "failed to rebalance, %d:%d", seed, initIdx))
         }
     }
     
